@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from result_frame import ResultFrame  # import the new ResultFrame module
 from button_frame import ButtonFrame
 from side_panel import SidePanel
 
@@ -10,29 +10,16 @@ class CalculatorApp:
         self.root.title("SpeedCrunch Clone")
         self.root.geometry("900x600")
 
-        # Set minimum width to initial width, but smaller height allowed
-        self.root.minsize(
-            900, 250
-        )  # Adjust 200 if needed to fit min height requirements
+        # Set minimum window size (fixed width, flexible height)
+        self.root.minsize(900, 250)
 
-        # Frame for Results
-        self.result_frame = ttk.Frame(self.root)
-        self.result_frame.pack(side=tk.LEFT, fill=tk.Y, padx=10, pady=10)
+        # Use the modular ResultFrame for output area
+        self.result_section = ResultFrame(self.root)
 
-        # Output label for results - at least two lines needed; height=2 already set
-        self.result_label = tk.Label(
-            self.result_frame,
-            font=("Arial", 14),
-            height=2,
-            bg="#2F0A24",  # Set result background color
-            fg="white"  # Set text color for contrast on dark bg
-        )
-        self.result_label.pack(fill=tk.X)
+        # Frame for Buttons, pass the result_label for updating output
+        self.button_frame = ButtonFrame(self.result_section.frame, self.result_section.result_label)
 
-        # Frame for Buttons
-        self.button_frame = ButtonFrame(self.result_frame, self.result_label)
-
-        # Side Panel
+        # Side Panel on the right
         self.side_panel = SidePanel(self.root)
         self.side_panel.side_frame.pack(side=tk.RIGHT, fill=tk.Y, padx=10, pady=10)
 

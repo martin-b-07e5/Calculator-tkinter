@@ -5,16 +5,20 @@ class ButtonFrame:
     def __init__(self, parent, result_label):
         self.result_label = result_label
 
+         # Create style for buttons with desired background
+        style = ttk.Style()
+        style.configure("Custom.TButton", background="#E9E9E9")
+
         # Create a frame for the buttons
         self.button_frame = ttk.Frame(parent)
         self.button_frame.pack(side=tk.BOTTOM, fill=tk.BOTH, padx=10, pady=10)
 
         # Button layout
         self.button_layout = [
-            ["7", "8", "9", "/", "C"],
-            ["4", "5", "6", "*", "E"],
-            ["1", "2", "3", "-", "x"],
-            ["0", ".", "=", "+"],
+            ["7", "8", "9", "/", "C", "sqrt"],
+            ["4", "5", "6", "*", "E", "^"],
+            ["1", "2", "3", "-", "(", ")"],
+            ["0", ".", "=", "+", "%", "!"],
         ]
 
         # Create buttons according to the specified layout
@@ -23,6 +27,7 @@ class ButtonFrame:
                 button = ttk.Button(
                     self.button_frame,
                     text=value,
+                    style="Custom.TButton",    # Apply custom style
                     command=self.get_command(value)
                 )
                 button.grid(row=r, column=c, padx=5, pady=5, sticky="nsew")

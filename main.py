@@ -11,7 +11,7 @@ class CalculatorApp:
         self.root.geometry("900x600")
 
         # Set minimum window size (fixed width, flexible height)
-        self.root.minsize(900, 250)
+        self.root.minsize(900, 300)
 
         # Main container frame using grid for proper layout
         self.main_container = ttk.Frame(root)

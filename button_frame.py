@@ -2,25 +2,30 @@ import tkinter as tk
 from tkinter import ttk
 from operations.arithmetic import basic_calculation, percentage, factorial
 from operations.advanced import square_root, power
-from operations.parsing import (
-    parse_expression,
-    extract_last_number,
-    is_valid_expression,
-)
-
+from operations.parsing import parse_expression, extract_last_number, is_valid_expression
 
 class ButtonFrame:
-    def __init__(self, parent, result_label):
-        self.result_label = result_label
-        self.current_expression = ""
+    def __init__(self, parent, result_frame):
+        self.result_frame = result_frame
 
         # Create style for buttons with desired background
         style = ttk.Style()
         style.configure("Custom.TButton", background="#E9E9E9")
 
         # Create a frame for the buttons
-        self.button_frame = ttk.Frame(parent)
-        self.button_frame.pack(side=tk.BOTTOM, fill=tk.BOTH, padx=10, pady=10)
+        self.frame = ttk.Frame(parent)  # Changed from self.button_frame to self.frame
+
+        # Configure grid for button frame
+        self.frame.grid_rowconfigure(0, weight=1)
+        self.frame.grid_rowconfigure(1, weight=1)
+        self.frame.grid_rowconfigure(2, weight=1)
+        self.frame.grid_rowconfigure(3, weight=1)
+        self.frame.grid_columnconfigure(0, weight=1)
+        self.frame.grid_columnconfigure(1, weight=1)
+        self.frame.grid_columnconfigure(2, weight=1)
+        self.frame.grid_columnconfigure(3, weight=1)
+        self.frame.grid_columnconfigure(4, weight=1)
+        self.frame.grid_columnconfigure(5, weight=1)
 
         # Button layout
         self.button_layout = [
@@ -34,18 +39,15 @@ class ButtonFrame:
         for r, row in enumerate(self.button_layout):
             for c, value in enumerate(row):
                 button = ttk.Button(
-                    self.button_frame,
+                    self.frame,
                     text=value,
                     style="Custom.TButton",
-                    command=self.get_command(value),
+                    command=self.get_command(value)
                 )
                 button.grid(row=r, column=c, padx=5, pady=5, sticky="nsew")
 
-        # Configure rows and columns to expand when resized
-        for i in range(len(self.button_layout)):
-            self.button_frame.grid_rowconfigure(i, weight=1)
-        for j in range(len(self.button_layout[0])):
-            self.button_frame.grid_columnconfigure(j, weight=1)
+        # Set calculate callback for Enter key
+        self.result_frame.set_calculate_callback(self.calculate_result)
 
     def get_command(self, value):
         """Returns the corresponding function for each button"""
@@ -56,88 +58,93 @@ class ButtonFrame:
             "√": self.square_root,
             "^": lambda: self.button_click("^"),
             "%": self.percentage,
-            "!": self.factorial,
+            "!": self.factorial
         }
 
         return commands.get(value, lambda: self.button_click(value))
 
     def button_click(self, value):
         """Handles clicks on numeric buttons and basic operators"""
-        self.current_expression += str(value)
-        self.update_display()
+        current_input = self.result_frame.get_input()
+
+        # If current input is "0", replace it (except for decimal point)
+        if current_input == "0" and value not in [".", "%", "!"]:
+            self.result_frame.set_input(str(value))
+        else:
+            self.result_frame.append_to_input(str(value))
 
     def clear_all(self):
-        """Clears the entire expression"""
-        self.current_expression = ""
-        self.update_display()
+        """Clears the input field"""
+        self.result_frame.clear_input()
 
     def delete_last(self):
-        """Deletes the last character"""
-        self.current_expression = self.current_expression[:-1]
-        self.update_display()
-
-    def update_display(self):
-        """Updates the label with current expression"""
-        display_text = self.current_expression if self.current_expression else "0"
-        self.result_label.config(text=display_text)
+        """Deletes the last character from input"""
+        self.result_frame.delete_last_char()
 
     def calculate_result(self):
         """Calculates the result of the current expression"""
         try:
-            if not self.current_expression:
+            current_input = self.result_frame.get_input()
+            if not current_input:
                 return
 
-            expression = parse_expression(self.current_expression)
+            expression = parse_expression(current_input)
             result = basic_calculation(expression)
-            self.current_expression = result
-            self.update_display()
+
+            # Add to history and clear input for next calculation
+            self.result_frame.add_to_history(current_input, result)
+            self.result_frame.clear_input()
 
         except Exception as e:
-            self.result_label.config(text=f"Error: {str(e)}")
-            self.current_expression = ""
+            # Show error in history but keep the input
+            self.result_frame.add_to_history(current_input, f"Error: {str(e)}")
 
     def square_root(self):
-        """Calculates square root of the last number"""
+        """Calculates square root of the current input"""
         try:
-            last_number = extract_last_number(self.current_expression)
-            if last_number:
-                result = square_root(last_number)
-                # Replace the last number with its square root
-                self.current_expression = (
-                    self.current_expression.rsplit(last_number, 1)[0] + result
-                )
-                self.update_display()
+            current_input = self.result_frame.get_input()
+            if not current_input:
+                return
+
+            # If there's a full expression, calculate it first
+            if any(op in current_input for op in ['+', '-', '*', '/', '^']):
+                expression = parse_expression(current_input)
+                base_result = basic_calculation(expression)
+                result = square_root(base_result)
+                self.result_frame.add_to_history(f"√({current_input})", result)
             else:
-                self.result_label.config(text="Error: No number found")
+                # Just calculate square root of the number
+                result = square_root(current_input)
+                self.result_frame.add_to_history(f"√{current_input}", result)
+
+            self.result_frame.clear_input()
+
         except Exception as e:
-            self.result_label.config(text=f"Error: {str(e)}")
+            self.result_frame.add_to_history(self.result_frame.get_input(), f"Error: {str(e)}")
 
     def percentage(self):
-        """Converts the last number to percentage"""
+        """Converts the current input to percentage"""
         try:
-            last_number = extract_last_number(self.current_expression)
-            if last_number:
-                result = percentage(last_number)
-                self.current_expression = (
-                    self.current_expression.rsplit(last_number, 1)[0] + result
-                )
-                self.update_display()
-            else:
-                self.result_label.config(text="Error: No number found")
+            current_input = self.result_frame.get_input()
+            if not current_input:
+                return
+
+            result = percentage(current_input)
+            self.result_frame.set_input(result)
+
         except Exception as e:
-            self.result_label.config(text=f"Error: {str(e)}")
+            self.result_frame.add_to_history(current_input, f"Error: {str(e)}")
 
     def factorial(self):
-        """Calculates factorial of the last number"""
+        """Calculates factorial of the current input"""
         try:
-            last_number = extract_last_number(self.current_expression)
-            if last_number:
-                result = factorial(last_number)
-                self.current_expression = (
-                    self.current_expression.rsplit(last_number, 1)[0] + result
-                )
-                self.update_display()
-            else:
-                self.result_label.config(text="Error: No number found")
+            current_input = self.result_frame.get_input()
+            if not current_input:
+                return
+
+            result = factorial(current_input)
+            self.result_frame.add_to_history(f"{current_input}!", result)
+            self.result_frame.clear_input()
+
         except Exception as e:
-            self.result_label.config(text=f"Error: {str(e)}")
+            self.result_frame.add_to_history(current_input, f"Error: {str(e)}")

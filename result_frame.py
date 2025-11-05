@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 
+
 class ResultFrame:
     """Result display frame that shows calculation output with a styled label."""
 
@@ -15,6 +16,6 @@ class ResultFrame:
             font=("Arial", 14),
             height=2,
             bg="#2F0A24",  # dark purple background
-            fg="white"     # white font for contrast
+            fg="white",  # white font for contrast
         )
         self.result_label.pack(fill=tk.X)

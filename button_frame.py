@@ -46,8 +46,11 @@ class ButtonFrame:
                 )
                 button.grid(row=r, column=c, padx=5, pady=5, sticky="nsew")
 
-        # Set calculate callback for Enter key
+        # Set calculate callback for Enter key or keypad Enter
         self.result_frame.set_calculate_callback(self.calculate_result)
+
+        # Set clear callback for Escape key ← NUEVA LÍNEA
+        self.result_frame.set_clear_callback(self.clear_all)
 
     def get_command(self, value):
         """Returns the corresponding function for each button"""

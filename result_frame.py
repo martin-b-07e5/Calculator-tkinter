@@ -49,12 +49,21 @@ class ResultFrame:
 
         # Bind Enter key to calculate
         self.input_entry.bind('<Return>', self.on_enter_pressed)
+        self.input_entry.bind('<KP_Enter>', self.on_enter_pressed)
+
+         # Bind Escape key to clear input
+        self.input_entry.bind('<Escape>', self.on_escape_pressed)
 
     def on_enter_pressed(self, event):
         """Handler for Enter key in input field"""
         # This will be connected to the calculate function from button_frame
         if hasattr(self, 'calculate_callback'):
             self.calculate_callback()
+
+    def on_escape_pressed(self, event):
+        """Handler for Escape key - clears the input field"""
+        if hasattr(self, 'clear_callback'):
+            self.clear_callback()
 
     def add_to_history(self, expression, result):
         """Adds a calculation to the history display"""
@@ -101,3 +110,7 @@ class ResultFrame:
     def set_calculate_callback(self, callback):
         """Sets the callback function for calculation"""
         self.calculate_callback = callback
+
+    def set_clear_callback(self, callback):
+        """Sets the callback function for clearing input"""
+        self.clear_callback = callback

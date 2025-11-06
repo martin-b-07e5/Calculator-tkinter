@@ -1,8 +1,7 @@
 """Button action handlers for calculator operations"""
 
-from operations.arithmetic import basic_calculation, percentage, factorial
-from operations.advanced import square_root, power
-from operations.parsing import parse_expression, extract_last_number
+from operations.arithmetic import basic_calculation, percentage, factorial, square_root, power
+from operations.parsing import parse_expression
 
 
 class ButtonHandlers:

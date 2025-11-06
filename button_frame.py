@@ -6,7 +6,7 @@ from button_handlers import ButtonHandlers
 class ButtonFrame:
     def __init__(self, parent, result_frame):
         self.result_frame = result_frame
-        self.handlers = ButtonHandlers(result_frame)  # ← NUEVO
+        self.handlers = ButtonHandlers(result_frame)
 
         # Create style for buttons with desired background
         style = ttk.Style()
@@ -63,3 +63,4 @@ class ButtonFrame:
         }
 
         return commands.get(value, lambda: self.handlers.handle_button_click(value))
+

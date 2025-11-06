@@ -1,28 +1,15 @@
 """Basic arithmetic operations"""
+
 import math
 
 def basic_calculation(expression):
     """Evaluates basic arithmetic expressions"""
     try:
-        # Replace ^ with power function call
-        expression = _replace_power_operator(expression)
-        result = eval(expression) # ← ALL BASIC OPERATIONS ARE PERFORMED HERE
+        result = eval(expression)  # All basic operations are performed here
         return str(result)
     except Exception as e:
         raise ValueError(f"Calculation error: {str(e)}")
 
-def _replace_power_operator(expression):
-    """Replaces ^ operator with power function calls"""
-    import re
-    # Pattern to find number^number
-    pattern = r'(\d+(?:\.\d+)?)\s*\^\s*(\d+(?:\.\d+)?)'
-
-    def replace_match(match):
-        base = match.group(1)
-        exponent = match.group(2)
-        return f'power({base}, {exponent})'
-
-    return re.sub(pattern, replace_match, expression)
 
 def power(base, exponent):
     """Calculates base^exponent"""
@@ -32,6 +19,7 @@ def power(base, exponent):
         return math.pow(base_num, exp_num)
     except ValueError:
         raise ValueError("Invalid values for power operation")
+
 
 def square_root(number):
     """Calculates square root"""
@@ -43,12 +31,14 @@ def square_root(number):
     except ValueError:
         raise ValueError("Invalid value for square root")
 
+
 def percentage(number):
     """Converts a number to percentage (divide by 100)"""
     try:
         return str(float(number) / 100)
     except ValueError:
         raise ValueError("Invalid value for percentage")
+
 
 def factorial(number):
     """Calculates factorial of a number"""

@@ -1,11 +1,18 @@
 """Basic arithmetic operations"""
-
 import math
 
 def basic_calculation(expression):
     """Evaluates basic arithmetic expressions"""
     try:
-        result = eval(expression)  # All basic operations are performed here
+        # Create a context with all available functions for eval
+        context = {
+            'power': power,
+            'sqrt': math.sqrt,
+            'abs': abs,
+            'round': round
+        }
+        # All basic operations are performed here in eval
+        result = eval(expression, context)  # Pass context to eval
         return str(result)
     except Exception as e:
         raise ValueError(f"Calculation error: {str(e)}")

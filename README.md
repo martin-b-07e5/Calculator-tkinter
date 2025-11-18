@@ -187,4 +187,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Note**: 👷 indicates features that are planned but not yet implemented. Features without emoji are fully functional.
+**Note**: 👷 Indicates features that are planned but not yet implemented. Features without emoji are fully functional.

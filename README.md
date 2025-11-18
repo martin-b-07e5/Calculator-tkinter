@@ -184,3 +184,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Built with **Python** and **Tkinter**
 - Icons and design inspired by modern calculator interfaces
 - Thanks to all contributors and testers
+---
+
+**Note**: 👷 Indicates features that are planned but not yet implemented. Features without emoji are fully functional.
